@@ -1,54 +1,54 @@
 
 ## Update
 
-I've updated all the weather scenes so if there is an error it'll just display ERR instead of freezing the clock. 
+I've updated all the weather scenes so if there is an error it'll just display ERR instead of freezing the clock.
 
 Now logs the closest flights to your location and farthest destinations!
 
-1. **Top N closest flights** to your location (`MAX_CLOSEST`)  
-2. **Top N farthest flights** based on origin or destination (`MAX_FARTHEST`)  
+1. **Top N closest flights** to your location (`MAX_CLOSEST`)
+2. **Top N farthest flights** based on origin or destination (`MAX_FARTHEST`)
 
-Each time a flight is detected:  
+Each time a flight is detected:
 
-- Calculates the **distance from home**  
-- Updates `close.txt` and `farthest.txt` if a **new closest flight** or a **new top-N farthest flight** is found  
-- Sends an **automatic email alert** when these changes occur with flight details and map 
+- Calculates the **distance from home**
+- Updates `close.txt` and `farthest.txt` if a **new closest flight** or a **new top-N farthest flight** is found
+- Sends an **automatic email alert** when these changes occur with flight details and map
 
-**Email notifications:**  
+**Email notifications:**
 
-- Sent from `flight.tracker.alerts2025@gmail.com`  
-- Includes a **link to an interactive map** showing flight positions (Link is good for 30 days. You can always view the maps on your local IP page)  
+- Sent from `flight.tracker.alerts2025@gmail.com`
+- Includes a **link to an interactive map** showing flight positions (Link is good for 30 days. You can always view the maps on your local IP page)
 
-**Key details:**  
+**Key details:**
 
-- Adjustable limits with `MAX_CLOSEST` and `MAX_FARTHEST`  
-- Closest flights to your house are always updated in `close.txt`  
-- Farthest destination/origin flights are maintained in `farthest.txt` independently  
-- Alerts taper off as flight positions stabilize  
-- Emails can be **turned off** while still keeping the log files and local wegpage. 
+- Adjustable limits with `MAX_CLOSEST` and `MAX_FARTHEST`
+- Closest flights to your house are always updated in `close.txt`
+- Farthest destination/origin flights are maintained in `farthest.txt` independently
+- Alerts taper off as flight positions stabilize
+- Emails can be **turned off** while still keeping the log files and local wegpage.
 
-**New features:**  
+**New features:**
 
 - Generates **interactive maps** for showing closest and farthest flights with generated curved Earth paths; solid for flown, dashed for remaining.
- 
-- Maps and log files can be viewed via your Pi’s local IP at `http://<Pi_IP>:8080` (The local IP address of your flight tracker ie 192.168.x.x:8080 etc) 
+
+- Maps and log files can be viewed via your Pi’s local IP at `http://<Pi_IP>:8080` (The local IP address of your flight tracker ie 192.168.x.x:8080 etc)
 
 This setup lets you stay updated without watching the clock, in addition to receiving email summaries with distance and map information.
 
 If you would like to manually view the log files they are located here
 
 ```
-nano /home/path/its-a-plane-python/close.txt
+nano ~/its-a-plane-python/close.txt
 ```
 ```
-nano /home/path/its-a-plane-python/farthest.txt
+nano ~/its-a-plane-python/farthest.txt
 ```
 
-**Please read if you already have a tracker setup** 
+**Please read if you already have a tracker setup**
 
-It won't work if you are using "sudo" to run the code (if you set this up on Bullseye). You'll have to go into crontab and take "sudo" out if you are using it. 
+It won't work if you are using "sudo" to run the code (if you set this up on Bullseye). You'll have to go into crontab and take "sudo" out if you are using it.
 
-If you already have a tracker setup and want to do these additions you'll have to install these. 
+If you already have a tracker setup and want to do these additions you'll have to install these.
 
 ```
 pip install folium selenium pillow
@@ -57,7 +57,7 @@ pip3 install --user flask
 Make sure if you replace `its-a-plane.py` that you reown it
 
 ```
-chmod +x /home/path/its-a-plane-python/its-a-plane.py
+chmod +x ~/its-a-plane-python/its-a-plane.py
 ```
 
 # Project Overview
@@ -83,7 +83,7 @@ This project is based on [Colin Waddell's work](https://github.com/ColinWaddell/
   - 1-4 hrs: Red
   - 4-8 hrs: Purple
   - 8+ hrs: Blue
-  
+
   **Arrival:**
   - On-time or early: Green
   - 0-30 mins late: Yellow
@@ -91,8 +91,8 @@ This project is based on [Colin Waddell's work](https://github.com/ColinWaddell/
   - 1-4 hrs late: Red
   - 4-8 hrs late: Purple
   - 8+ hrs late: Blue
- 
-  - If either the actual arrival time is None (not updated yet) or actual departure time is None (not updated yet) the airport code will be Grey. Happens if you live close to an airport 
+
+  - If either the actual arrival time is None (not updated yet) or actual departure time is None (not updated yet) the airport code will be Grey. Happens if you live close to an airport
 
 - An arrow between the airport codes acts as a progress bar for the flight, starting red (just left) and turning green (almost complete).
 - Below, the airline’s IATA name, flight number, abbreviated aircraft type, and the distance/direction to your location are displayed.
@@ -102,13 +102,13 @@ I've put a LOT of my time and effort into this project. If you'd like to show yo
 [paypal.me/c0wsaysmoo](https://paypal.me/c0wsaysmoo)
 
 Please please please reread the instructions carefully if you have any issues. Most issues are by not following them properly. If you absolutly can't figure it out shoot me a message. I am also on reddit under [Mediocre-Opposite225](https://old.reddit.com/user/Mediocre-Opposite225/)
- 
+
 ![tracker](https://github.com/user-attachments/assets/802a6c43-31d2-48dc-816b-4eb0ca0367e1)
 ![PXL_20241019_155956016](https://github.com/user-attachments/assets/91532d4f-3b6f-4a1b-9a26-43ffe5c6093d)
 ![PXL_20241019_165254031](https://github.com/user-attachments/assets/2e70bfcd-70ae-4acc-ba69-dde07c56a068)
 ![PXL_20241019_165305826](https://github.com/user-attachments/assets/5188780d-84ff-4111-8bde-9584d6a70df2)
 ![PXL_20241019_155500974](https://github.com/user-attachments/assets/5c3540e9-b699-41c8-8aef-32fb7a7f7b5d)
-Had to remount the Pi since the display ribbon bumped into the panel 
+Had to remount the Pi since the display ribbon bumped into the panel
 ![PXL_20241019_155518437](https://github.com/user-attachments/assets/2d6f4beb-59f1-4771-80ce-8bafd00cd1fc)
 ![PXL_20241019_155605121](https://github.com/user-attachments/assets/4b71b758-00c9-4586-a5a0-ad251696eb17)
 ![PXL_20241019_155629794](https://github.com/user-attachments/assets/f82088b8-e959-44e3-82f3-7207779cc659)
@@ -133,7 +133,7 @@ The email
 ## Hardware Overview:
 
 This is what I used to make mine. Other than the Pi and the Bonnet you can use whatever you want. You will need a computer with a SD card reader to setup the Pi and to do the install. You won't need it after it is setup.
-- [Raspberry Pi 3A+](https://www.adafruit.com/product/4027) You can use the Pi 3B+/Pi 4 as well. (If you use a Pi 4 you'll need to adjust the "GPIO_SLOWDOWN" in the config file since it's more powerful than the Pi 3). It's just more expensive and you don't need the ethernet jack. You can also get them at [Microcenter](https://www.microcenter.com/product/514076/raspberry-pi-3-model-a-board). I tried with a Pi Zero, but couldn't get rid of the flicking completely even with soldering. I have not tried with a Pi 5, it requires different instructions with the Bonnet. If someone gets it running on the Pi 5 please let me know and I'll update the instructions. 
+- [Raspberry Pi 3A+](https://www.adafruit.com/product/4027) You can use the Pi 3B+/Pi 4 as well. (If you use a Pi 4 you'll need to adjust the "GPIO_SLOWDOWN" in the config file since it's more powerful than the Pi 3). It's just more expensive and you don't need the ethernet jack. You can also get them at [Microcenter](https://www.microcenter.com/product/514076/raspberry-pi-3-model-a-board). I tried with a Pi Zero, but couldn't get rid of the flicking completely even with soldering. I have not tried with a Pi 5, it requires different instructions with the Bonnet. If someone gets it running on the Pi 5 please let me know and I'll update the instructions.
 - [Adafruit bonnet](https://www.adafruit.com/product/3211)
 - [64x32 RGB P4 panel](https://www.adafruit.com/product/2278) (I used a P4 panel measuring approximately 10 inches by 5 inches. If you prefer a smaller screen, you can opt for P3 or P2.5 panels etc, as long as they are 64x32 in size. These are available on Amazon and other websites. If the colors appear inverted, adjust the display file by changing 'RGB' to 'RBG.')
 - [Tinted acrylic](https://www.adafruit.com/product/4749) makes the screen so much easier to read and looks nicer 10/10 recommend. Keep in mind that the acrylic panel is slightly larger than the P4 screen when you make the case.
@@ -145,14 +145,14 @@ This is what I used to make mine. Other than the Pi and the Bonnet you can use w
 - [Optional power button](https://www.microcenter.com/product/420422/mcm-electronics-push-button-switch-spst-red) (though not really necessary)
 - Soldering iron only required for PWM bridge or power button. The Pi 3 seems to be ok without the PWM bridge, but anything less and you'll want to.
 - The case I built using a strip of 2in x 1/4in wood that I clampted and glued togother.
-- However my friend [made this case](https://makerworld.com/en/models/819892#profileId-762764) that you can 3D print. 
+- However my friend [made this case](https://makerworld.com/en/models/819892#profileId-762764) that you can 3D print.
 - M2.5 machine screws to screw the bonnet onto the Pi and to screw the Pi onto the case from Ace Hardware.
 
 ---
 
 # Plane Tracker RGB Pi Setup Guide
 
-Once you get your Raspberry Pi up and running, you can follow [this guide](https://linuxconfig.org/enabling-ssh-on-raspberry-pi-a-comprehensive-guide) to set up the project. 
+Once you get your Raspberry Pi up and running, you can follow [this guide](https://linuxconfig.org/enabling-ssh-on-raspberry-pi-a-comprehensive-guide) to set up the project.
 
 
 ### 1. Install Raspberry Pi OS Lite
@@ -189,10 +189,10 @@ For "Quality" or "Convenience" it's **"Quality"** IF you soldered the jumper. If
 **"path"** is your username for the pi
 
 ```
-cd /home/path/rpi-rgb-led-matrix/examples-api-use/
+cd ~/rpi-rgb-led-matrix/examples-api-use/
 ```
 
-If you DIDN'T solder 
+If you DIDN'T solder
 
 ```
 sudo ./demo -D 1 runtext.ppm --led-rows=32 --led-cols=64 --led-limit-refresh=60 --led-slowdown-gpio=2 --led-gpio-mapping=adafruit-hat
@@ -219,12 +219,12 @@ git clone https://github.com/c0wsaysmoo/plane-tracker-rgb-pi
 ```
 If the bridge on the bonnet is not soldered, you'll need to set HAT_PWM_ENABLED=False in the config file.
 
-After cloning the files, move everything to the main folder, as some files need to be in /home/path/ rather than /home/path/plane-tracker-rgb-pi/ You'll need to combine the two logos folders since Github only allows 1,000 files per folder so I had to split them.
+After cloning the files, move everything to the main folder, as some files need to be in ~/ rather than ~/plane-tracker-rgb-pi/ You'll need to combine the two logos folders since Github only allows 1,000 files per folder so I had to split them.
 ```
-mv /home/path/plane-tracker-rgb-pi/* /home/path/
-mkdir /home/path/logos
-mv /home/path/logo/* /home/path/logos/
-mv /home/path/logo2/* /home/path/logos/
+mv ~/plane-tracker-rgb-pi/* ~/
+mkdir ~/logos
+mv ~/logo/* ~/logos/
+mv ~/logo2/* ~/logos/
 ```
 
 For Linux Bookworm:
@@ -239,38 +239,38 @@ pip3 install --user flask
 sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.11
 ```
 
-Move the RGB Module 
+Move the RGB Module
 ```
-mv /home/path/rpi-rgb-led-matrix/bindings/python/rgbmatrix /home/path/its-a-plane-python/
+mv ~/rpi-rgb-led-matrix/bindings/python/rgbmatrix ~/its-a-plane-python/
 ```
 
 Make the Script Executable
 ```
-chmod +x /home/path/its-a-plane-python/its-a-plane.py
+chmod +x ~/its-a-plane-python/its-a-plane.py
 ```
 
 Edit the config file
 
 ```
-nano /home/path/its-a-plane-python/config.py
+nano ~/its-a-plane-python/config.py
 ```
 
 Run the Script
 
 ```
-/home/path/its-a-plane-python/its-a-plane.py
+~/its-a-plane-python/its-a-plane.py
 ```
 Set Up the Script to Run on Boot
 
 To ensure the script runs on boot, use crontab -e to edit the cron jobs and add the following line:
 
 ```
-@reboot sleep 60 && /home/path/its-a-plane-python/its-a-plane.py
+@reboot sleep 60 && ~/its-a-plane-python/its-a-plane.py
 ```
 
-You can also run it like so to create a log file in case there are issues. 
+You can also run it like so to create a log file in case there are issues.
 ```
-@reboot sleep 60 && /home/path/its-a-plane-python/its-a-plane.py >> /home/path/its-a-plane-python/workdammit.log 2>&1
+@reboot sleep 60 && ~/its-a-plane-python/its-a-plane.py >> ~/its-a-plane-python/workdammit.log 2>&1
 ```
 
 Optional: Add a Power Button
