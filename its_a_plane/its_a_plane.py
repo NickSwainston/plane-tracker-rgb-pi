@@ -3,7 +3,9 @@ import subprocess
 import os
 from display import Display
 
-if __name__ == "__main__":
+
+def main():
+    """Main entry point for the its-a-plane application."""
     # Get directory of this script (its-a-plane.py)
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,3 +18,7 @@ if __name__ == "__main__":
     # Start display loop
     run_text = Display()
     run_text.run()
+
+
+if __name__ == "__main__":
+    main()

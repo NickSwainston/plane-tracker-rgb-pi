@@ -1,0 +1,37 @@
+[project]
+name = "its-a-plane"
+version = "1.0.0"
+description = "Plane tracker for RGB matrix display on Raspberry Pi"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "c0wsaysmoo" }
+]
+dependencies = [
+    "flask>=2.0.0",
+    "requests>=2.25.0",
+    "pillow>=9.0.0",
+    "urllib3>=1.26.0",
+]
+
+[project.scripts]
+its_a_plane = "its_a_plane.its_a_plane:main"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["its_a_plane"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"its_a_plane" = "its_a_plane"
+"logo" = "its_a_plane/data/logo"
+"logo2" = "its_a_plane/data/logo2"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "logo/",
+    "logo2/",
+]
