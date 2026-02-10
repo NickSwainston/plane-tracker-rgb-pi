@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 
 from its_a_plane.utilities.animator import Animator
@@ -5,6 +6,9 @@ from its_a_plane.setup import colours
 
 LOGO_SIZE = 16
 DEFAULT_IMAGE = "default"
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+LOGO_PATH = os.path.join(DIR_PATH, "../data/logo")
+LOGO2_PATH = os.path.join(DIR_PATH, "../data/logo2")
 
 class FlightLogoScene:
     @Animator.KeyFrame.add(0)
@@ -27,11 +31,14 @@ class FlightLogoScene:
         if icao in ("", "N/A"):
             icao = DEFAULT_IMAGE
 
-        # Open the file
+        # Open the file - try logo directory first, then logo2, then default
         try:
-            image = Image.open(f"logos/{icao}.png")
+            image = Image.open(f"{LOGO_PATH}/{icao}.png")
         except FileNotFoundError:
-            image = Image.open(f"logos/{DEFAULT_IMAGE}.png")
+            try:
+                image = Image.open(f"{LOGO2_PATH}/{icao}.png")
+            except FileNotFoundError:
+                image = Image.open(f"{LOGO_PATH}/{DEFAULT_IMAGE}.png")
 
 
         # Make image fit our screen.
