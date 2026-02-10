@@ -11,26 +11,26 @@ from FlightRadar24.api import FlightRadar24API
 from requests.exceptions import ConnectionError
 from urllib3.exceptions import NewConnectionError, MaxRetryError
 
-from config import (
+from its_a_plane.config import (
     DISTANCE_UNITS,
     CLOCK_FORMAT,
     MAX_FARTHEST,
     MAX_CLOSEST,
 )
 
-from setup import email_alerts
-from web import map_generator, upload_helper
+from its_a_plane.setup import email_alerts
+from its_a_plane.web import map_generator, upload_helper
 
 # Optional config values
 
 try:
-    from config import MIN_ALTITUDE
+    from its_a_plane.config import MIN_ALTITUDE
 except (ImportError, ModuleNotFoundError, NameError):
     MIN_ALTITUDE = 0
 
 
 try:
-    from config import ZONE_HOME, LOCATION_HOME
+    from its_a_plane.config import ZONE_HOME, LOCATION_HOME
     ZONE_DEFAULT = ZONE_HOME
     LOCATION_DEFAULT = LOCATION_HOME
 except (ImportError, ModuleNotFoundError, NameError):
@@ -209,7 +209,7 @@ def log_farthest_flight(entry: dict):
                     return
             lst.append(entry)
             notify = True
-            
+
         lst.sort(key=lambda x: x["farthest_value"], reverse=True)
         lst = lst[:MAX_FARTHEST]
         safe_write_json(LOG_FILE_FARTHEST, lst)
@@ -366,7 +366,7 @@ class Overhead:
             with self._lock:
                 self._new_data = False
                 self._processing = False
-                
+
     # Properties
     @property
     def new_data(self):
@@ -387,7 +387,7 @@ class Overhead:
     @property
     def data_is_empty(self):
         return len(self._data) == 0
-        
+
 # Main
 
 if __name__ == "__main__":

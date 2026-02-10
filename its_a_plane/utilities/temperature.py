@@ -10,9 +10,9 @@ from urllib3.util.retry import Retry
 
 # Attempt to load config data
 try:
-    from config import TOMORROW_API_KEY
-    from config import TEMPERATURE_UNITS
-    from config import FORECAST_DAYS
+    from its_a_plane.config import TOMORROW_API_KEY
+    from its_a_plane.config import TEMPERATURE_UNITS
+    from its_a_plane.config import FORECAST_DAYS
 
 except (ModuleNotFoundError, NameError, ImportError):
     # If there's no config data
@@ -23,7 +23,7 @@ except (ModuleNotFoundError, NameError, ImportError):
 if TEMPERATURE_UNITS != "metric" and TEMPERATURE_UNITS != "imperial":
     TEMPERATURE_UNITS = "metric"
 
-from config import TEMPERATURE_LOCATION
+from its_a_plane.config import TEMPERATURE_LOCATION
 
 def is_dns_error(exc: Exception) -> bool:
     cause = exc
@@ -32,7 +32,7 @@ def is_dns_error(exc: Exception) -> bool:
             return True
         cause = cause.__cause__
     return False
-    
+
 _session = None
 
 def get_session() -> Session:
@@ -60,7 +60,7 @@ def get_session() -> Session:
         _session.mount("http://", adapter)
 
     return _session
-    
+
 # Weather API
 TOMORROW_API_URL = "https://api.tomorrow.io/v4"
 
@@ -107,8 +107,8 @@ def grab_temperature_and_humidity():
             )
 
         return None, None
-        
-        
+
+
 def grab_forecast(tag="unknown"):
     current_time = datetime.utcnow()
     dt = current_time + timedelta(hours=6)
@@ -170,7 +170,7 @@ def grab_forecast(tag="unknown"):
             )
 
         return []
-        
+
     except KeyError as e:
         logging.error(f"[Forecast:{tag}] Unexpected data format: {e}")
         return []

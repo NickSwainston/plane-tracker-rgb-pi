@@ -1,10 +1,10 @@
 from datetime import datetime
-from utilities.temperature import grab_forecast
-from utilities.animator import Animator
-from setup import colours, fonts, frames
+from its_a_plane.utilities.temperature import grab_forecast
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, frames
 from rgbmatrix import graphics
 import logging
-from config import NIGHT_START, NIGHT_END
+from its_a_plane.config import NIGHT_START, NIGHT_END
 
 # Configure logging
 #logging.basicConfig(filename='myapp.log', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -22,7 +22,7 @@ class DateScene(object):
         super().__init__()
         self._last_date = None
         self.today_moonphase = None
-        self.last_fetched_moonphase = None  # Store the date of the last forecast 
+        self.last_fetched_moonphase = None  # Store the date of the last forecast
 
 
     def moonphase(self):
@@ -101,7 +101,7 @@ class DateScene(object):
         # Flag for forced redraw if new data arrived
         if len(self._data):
             self._redraw_date = True
-            return 
+            return
 
         # Get moon phase
         moon_phase_value = self.moonphase()

@@ -1,10 +1,10 @@
 from datetime import datetime
-from utilities.temperature import grab_forecast
-from utilities.animator import Animator
-from setup import colours, fonts, frames
+from its_a_plane.utilities.temperature import grab_forecast
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, frames
 from rgbmatrix import graphics
 import logging
-from config import CLOCK_FORMAT, NIGHT_END, NIGHT_START
+from its_a_plane.config import CLOCK_FORMAT, NIGHT_END, NIGHT_START
 
 # Configure logging
 #logging.basicConfig(filename='myapp.log', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -16,8 +16,8 @@ DAY_COLOUR = colours.LIGHT_ORANGE
 NIGHT_COLOUR = colours.LIGHT_BLUE
 
 
-# Convert NIGHT_START and NIGHT_END to datetime objects 
-NIGHT_START_TIME = datetime.strptime(NIGHT_START, "%H:%M") 
+# Convert NIGHT_START and NIGHT_END to datetime objects
+NIGHT_START_TIME = datetime.strptime(NIGHT_START, "%H:%M")
 NIGHT_END_TIME = datetime.strptime(NIGHT_END, "%H:%M")
 
 class ClockScene(object):

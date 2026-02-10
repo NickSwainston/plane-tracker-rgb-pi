@@ -1,7 +1,7 @@
 from PIL import Image
 
-from utilities.animator import Animator
-from setup import colours
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours
 
 LOGO_SIZE = 16
 DEFAULT_IMAGE = "default"

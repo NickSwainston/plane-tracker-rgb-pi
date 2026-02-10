@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
-from config import EMAIL, DISTANCE_UNITS, CLOCK_FORMAT
+from its_a_plane.config import EMAIL, DISTANCE_UNITS, CLOCK_FORMAT
 from typing import Optional
 import os
 

@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 import colorsys
 from rgbmatrix import graphics
-from utilities.animator import Animator
-from setup import colours, fonts, frames, screen
-from utilities.temperature import grab_temperature_and_humidity
-from config import NIGHT_START, NIGHT_END
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, frames, screen
+from its_a_plane.utilities.temperature import grab_temperature_and_humidity
+from its_a_plane.config import NIGHT_START, NIGHT_END
 
 # Scene Setup
 TEMPERATURE_REFRESH_SECONDS = 600
@@ -36,7 +36,7 @@ class TemperatureScene(object):
         now = datetime.now().replace(microsecond=0).time()
         if now == NIGHT_START_TIME.time() or now == NIGHT_END_TIME.time():
             self._redraw_temp = True
-            return  
+            return
 
         # Ensure redraw when there's new data
         if len(self._data):

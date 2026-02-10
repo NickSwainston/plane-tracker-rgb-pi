@@ -1,7 +1,7 @@
 from rgbmatrix import graphics
-from utilities.animator import Animator
-from setup import colours, fonts, screen
-from config import DISTANCE_UNITS
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, screen
+from its_a_plane.config import DISTANCE_UNITS
 
 # Setup
 PLANE_COLOUR = colours.LIGHT_MID_BLUE
@@ -76,7 +76,7 @@ class PlaneDetailsScene(object):
             self.plane_position = screen.WIDTH
             if len(self._data) > 1:
                 self._data_index = (self._data_index + 1) % len(self._data)
-                self._data_all_looped = (not self._data_index) or self._data_all_looped 
+                self._data_all_looped = (not self._data_index) or self._data_all_looped
                 self.reset_scene()
 
     @Animator.KeyFrame.add(0)

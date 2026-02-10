@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import subprocess
 import os
-from display import Display
+from its_a_plane.display import Display
 
 
 def main():

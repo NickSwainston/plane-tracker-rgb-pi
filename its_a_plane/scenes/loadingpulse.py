@@ -1,5 +1,5 @@
-from utilities.animator import Animator
-from setup import colours
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours
 
 # Setup
 BLINKER_POSITION = (63, 0)

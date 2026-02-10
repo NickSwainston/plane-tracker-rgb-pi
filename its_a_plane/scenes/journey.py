@@ -1,15 +1,15 @@
-from utilities.animator import Animator
-from setup import colours, fonts
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts
 from rgbmatrix import graphics
-from config import DISTANCE_UNITS
+from its_a_plane.config import DISTANCE_UNITS
 
 try:
-    from config import JOURNEY_CODE_SELECTED
+    from its_a_plane.config import JOURNEY_CODE_SELECTED
 except (ModuleNotFoundError, NameError, ImportError):
     JOURNEY_CODE_SELECTED = "ORD"
 
 try:
-    from config import JOURNEY_BLANK_FILLER
+    from its_a_plane.config import JOURNEY_BLANK_FILLER
 except (ModuleNotFoundError, NameError, ImportError):
     JOURNEY_BLANK_FILLER = " ? "
 
@@ -31,7 +31,7 @@ DISTANCE_FONT = fonts.extrasmall
 ARROW_POINT_POSITION = (42, 5)
 ARROW_WIDTH = 5
 ARROW_HEIGHT = 8
-    
+
 class JourneyScene(object):
     def __init__(self):
         super().__init__()
@@ -69,11 +69,11 @@ class JourneyScene(object):
 
         departure_delay_minutes = safe_delay(time_real_departure, time_scheduled_departure)
         arrival_delay_minutes = safe_delay(time_estimated_arrival, time_scheduled_arrival)
-        
+
         # Print time differences for debugging
         #print(f"Origin: {origin}, Departure Delay (minutes): {departure_delay_minutes}")
         #print(f"Destination: {destination}, Arrival Delay (minutes): {arrival_delay_minutes}")
-        
+
         if departure_delay_minutes is None:
             origin_color = colours.LIGHT_GREY
         elif departure_delay_minutes <= 20:

@@ -1,18 +1,18 @@
 import sys
 from datetime import datetime
-from setup import frames
-from utilities.animator import Animator
-from utilities.overhead import Overhead
+from its_a_plane.setup import frames
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.utilities.overhead import Overhead
 
-from scenes.temperature import TemperatureScene
-from scenes.flightdetails import FlightDetailsScene
-from scenes.flightlogo import FlightLogoScene
-from scenes.journey import JourneyScene
-from scenes.loadingpulse import LoadingPulseScene
-from scenes.clock import ClockScene
-from scenes.planedetails import PlaneDetailsScene
-from scenes.daysforecast import DaysForecastScene
-from scenes.date import DateScene
+from its_a_plane.scenes.temperature import TemperatureScene
+from its_a_plane.scenes.flightdetails import FlightDetailsScene
+from its_a_plane.scenes.flightlogo import FlightLogoScene
+from its_a_plane.scenes.journey import JourneyScene
+from its_a_plane.scenes.loadingpulse import LoadingPulseScene
+from its_a_plane.scenes.clock import ClockScene
+from its_a_plane.scenes.planedetails import PlaneDetailsScene
+from its_a_plane.scenes.daysforecast import DaysForecastScene
+from its_a_plane.scenes.date import DateScene
 
 from rgbmatrix import graphics
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -28,7 +28,7 @@ def flight_updated(flights_a, flights_b):
 
 try:
     # Attempt to load config data
-    from config import (
+    from its_a_plane.config import (
         BRIGHTNESS,
         GPIO_SLOWDOWN,
         HAT_PWM_ENABLED,
@@ -51,7 +51,7 @@ except (ModuleNotFoundError, NameError):
 def adjust_brightness(matrix):
     if NIGHT_BRIGHTNESS is False:
         return  # Do nothing if NIGHT_BRIGHTNESS is False
-        
+
     # Redraw screen every frame
     now = datetime.now().time().replace(second=0, microsecond=0)  # Extract only hours and minutes
     night_start_time = NIGHT_START.time().replace(second=0, microsecond=0)
@@ -62,12 +62,12 @@ def adjust_brightness(matrix):
         new_brightness = BRIGHTNESS
     else:
         new_brightness = BRIGHTNESS_NIGHT
-        
+
     # Check if the brightness has changed
     if matrix.brightness != new_brightness:
         # Update the brightness
         matrix.brightness = new_brightness
-        
+
 class Display(
     TemperatureScene,
     FlightDetailsScene,
@@ -123,7 +123,7 @@ class Display(
     def draw_square(self, x0, y0, x1, y1, colour):
         for x in range(x0, x1):
             _ = graphics.DrawLine(self.canvas, x, y0, x, y1, colour)
-            
+
 
     @Animator.KeyFrame.add(0)
     def clear_screen(self):
@@ -163,8 +163,8 @@ class Display(
     def sync(self, count):
         # Redraw screen every frame
         _ = self.matrix.SwapOnVSync(self.canvas)
-        
-    
+
+
         # Adjust brightness
         adjust_brightness(self.matrix)
 

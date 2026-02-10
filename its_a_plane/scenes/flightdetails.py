@@ -1,5 +1,5 @@
-from utilities.animator import Animator
-from setup import colours, fonts, screen
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, screen
 
 from rgbmatrix import graphics
 
@@ -51,7 +51,7 @@ class FlightDetailsScene(object):
                 flight_no = callsign[len(owner_icao):]
             else:
                 flight_no = callsign
-            
+
             # Add airline name if there is one
             airline = self._data[self._data_index]["airline"]
             if airline:

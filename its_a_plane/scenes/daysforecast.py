@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 from PIL import Image
 
-from utilities.animator import Animator
-from setup import colours, fonts, frames, screen
-from utilities.temperature import grab_forecast
-from config import NIGHT_START, NIGHT_END
+from its_a_plane.utilities.animator import Animator
+from its_a_plane.setup import colours, fonts, frames, screen
+from its_a_plane.utilities.temperature import grab_forecast
+from its_a_plane.config import NIGHT_START, NIGHT_END
 from rgbmatrix import graphics
 
 # Setup
@@ -118,7 +118,7 @@ class DaysForecastScene(object):
                 except AttributeError:
                     resample = Image.ANTIALIAS          # Pillow <10
                 image.thumbnail((ICON_SIZE, ICON_SIZE), resample)
-                
+
                 self.matrix.SetImage(image.convert("RGB"), icon_x, ICON_POSITION)
 
                 # Draw temps

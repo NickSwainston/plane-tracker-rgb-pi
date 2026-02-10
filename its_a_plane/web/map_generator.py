@@ -1,7 +1,7 @@
 import folium
 import os
 import math
-from config import LOCATION_HOME, DISTANCE_UNITS
+from its_a_plane.config import LOCATION_HOME, DISTANCE_UNITS
 
 
 WEB_DIR = os.path.dirname(__file__)
@@ -10,7 +10,7 @@ os.makedirs(MAPS_DIR, exist_ok=True)
 
 def get_unit_label():
     return "mi" if DISTANCE_UNITS.lower() == "imperial" else "km"
-    
+
 def great_circle_points(start, end, steps=50):
     lat1, lon1 = map(math.radians, start)
     lat2, lon2 = map(math.radians, end)
@@ -79,7 +79,7 @@ def align_to_reference_tile(lon, ref_lon):
     while lon - ref_lon < -180:
         lon += 360
     return lon
-    
+
 def generate_closest_map(entries, filename="closest.html"):
     m = folium.Map(location=LOCATION_HOME[:2], zoom_start=10)
     unit_label = get_unit_label()
