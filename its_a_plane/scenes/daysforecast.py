@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from PIL import Image
 
@@ -8,6 +9,8 @@ from its_a_plane.config import NIGHT_START, NIGHT_END
 from rgbmatrix import graphics
 
 # Setup
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+ICONS_PATH = os.path.join(DIR_PATH, "../data/icons")
 DAY_COLOUR = colours.LIGHT_PINK
 MIN_T_COLOUR = colours.LIGHT_MID_BLUE
 MAX_T_COLOUR = colours.LIGHT_DARK_ORANGE
@@ -112,7 +115,7 @@ class DaysForecastScene(object):
                 graphics.DrawText(self.canvas, TEXT_FONT, day_x, DAY_POSITION, DAY_COLOUR, day_name)
 
                 # Draw icon
-                image = Image.open(f"icons/{icon}.png")
+                image = Image.open(f"{ICONS_PATH}/{icon}.png")
                 try:
                     resample = Image.Resampling.LANCZOS  # Pillow 10+
                 except AttributeError:

@@ -33,9 +33,11 @@ packages = ["its_a_plane"]
 "its_a_plane" = "its_a_plane"
 "logo" = "its_a_plane/data/logo"
 "logo2" = "its_a_plane/data/logo2"
+"icons" = "its_a_plane/data/icons"
 
 [tool.hatch.build.targets.sdist]
 include = [
     "logo/",
     "logo2/",
+    "icons/",
 ]
