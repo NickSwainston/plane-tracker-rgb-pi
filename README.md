@@ -1,64 +1,20 @@
 
-## Update
 
-I've updated all the weather scenes so if there is an error it'll just display ERR instead of freezing the clock.
+# Table of Contents
 
-Now logs the closest flights to your location and farthest destinations!
+- [Project Overview](#project-overview)
+  - [Clock Screen](#clock-screen)
+  - [Flight Tracker Screen](#flight-tracker-screen)
+- [Updates](#updates)
+- [Hardware Overview](#hardware-overview)
+- [Plane Tracker RGB Pi Setup Guide](#plane-tracker-rgb-pi-setup-guide)
+  - [1. Install Raspberry Pi OS Lite](#1-install-raspberry-pi-os-lite)
+  - [2. Connect via SSH](#2-connect-via-ssh)
+  - [3. Install the Adafruit Bonnet](#3-install-the-adafruit-bonnet)
+  - [4. Install Git and Configure Your Info](#4-install-git-and-configure-your-info)
+  - [Optional: Add a Power Button](#optional-add-a-power-button)
 
-1. **Top N closest flights** to your location (`MAX_CLOSEST`)
-2. **Top N farthest flights** based on origin or destination (`MAX_FARTHEST`)
-
-Each time a flight is detected:
-
-- Calculates the **distance from home**
-- Updates `close.txt` and `farthest.txt` if a **new closest flight** or a **new top-N farthest flight** is found
-- Sends an **automatic email alert** when these changes occur with flight details and map
-
-**Email notifications:**
-
-- Sent from `flight.tracker.alerts2025@gmail.com`
-- Includes a **link to an interactive map** showing flight positions (Link is good for 30 days. You can always view the maps on your local IP page)
-
-**Key details:**
-
-- Adjustable limits with `MAX_CLOSEST` and `MAX_FARTHEST`
-- Closest flights to your house are always updated in `close.txt`
-- Farthest destination/origin flights are maintained in `farthest.txt` independently
-- Alerts taper off as flight positions stabilize
-- Emails can be **turned off** while still keeping the log files and local wegpage.
-
-**New features:**
-
-- Generates **interactive maps** for showing closest and farthest flights with generated curved Earth paths; solid for flown, dashed for remaining.
-
-- Maps and log files can be viewed via your Pi’s local IP at `http://<Pi_IP>:8080` (The local IP address of your flight tracker ie 192.168.x.x:8080 etc)
-
-This setup lets you stay updated without watching the clock, in addition to receiving email summaries with distance and map information.
-
-If you would like to manually view the log files they are located here
-
-```
-nano ~/its-a-plane-python/close.txt
-```
-```
-nano ~/its-a-plane-python/farthest.txt
-```
-
-**Please read if you already have a tracker setup**
-
-It won't work if you are using "sudo" to run the code (if you set this up on Bullseye). You'll have to go into crontab and take "sudo" out if you are using it.
-
-If you already have a tracker setup and want to do these additions you'll have to install these.
-
-```
-pip install folium selenium pillow
-pip3 install --user flask
-```
-Make sure if you replace `its-a-plane.py` that you reown it
-
-```
-chmod +x ~/its-a-plane-python/its-a-plane.py
-```
+---
 
 # Project Overview
 
@@ -130,7 +86,11 @@ The email
 
 ---
 
-## Hardware Overview:
+# Updates
+
+Updates have been moved to the `CHANGELOG.md`
+
+# Hardware Overview:
 
 This is what I used to make mine. Other than the Pi and the Bonnet you can use whatever you want. You will need a computer with a SD card reader to setup the Pi and to do the install. You won't need it after it is setup.
 - [Raspberry Pi 3A+](https://www.adafruit.com/product/4027) You can use the Pi 3B+/Pi 4 as well. (If you use a Pi 4 you'll need to adjust the "GPIO_SLOWDOWN" in the config file since it's more powerful than the Pi 3). It's just more expensive and you don't need the ethernet jack. You can also get them at [Microcenter](https://www.microcenter.com/product/514076/raspberry-pi-3-model-a-board). I tried with a Pi Zero, but couldn't get rid of the flicking completely even with soldering. I have not tried with a Pi 5, it requires different instructions with the Bonnet. If someone gets it running on the Pi 5 please let me know and I'll update the instructions.
@@ -174,7 +134,7 @@ I use **[MobaXterm](https://mobaxterm.mobatek.net/)** on Windows to SSH into the
 [Install the bonnet](https://learn.adafruit.com/adafruit-rgb-matrix-bonnet-for-raspberry-pi/) by following the instructions provided by Adafruit.
 
 ```
-curl https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/main/rgb-matrix.sh >rgb-matrix.sh
+curl https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/main/rgb-matrix.sh > rgb-matrix.sh
 sudo bash rgb-matrix.sh
 ```
 
@@ -217,7 +177,7 @@ Clone the repository:
 ```
 git clone https://github.com/c0wsaysmoo/plane-tracker-rgb-pi
 ```
-If the bridge on the bonnet is not soldered, you'll need to set HAT_PWM_ENABLED=False in the config file.
+If the bridge on the bonnet is not soldered, you'll need to set `HAT_PWM_ENABLED=False` in the `its_a_plane/config.py` file.
 
 After cloning the files, move everything to the main folder, as some files need to be in ~/ rather than ~/plane-tracker-rgb-pi/ You'll need to combine the two logos folders since Github only allows 1,000 files per folder so I had to split them.
 ```
