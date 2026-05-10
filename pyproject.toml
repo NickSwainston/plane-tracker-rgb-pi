@@ -12,11 +12,12 @@ dependencies = [
     "requests>=2.25.0",
     "pillow>=9.0.0,<10.0.0",
     "urllib3>=1.26.0",
-    "FlightRadarAPI>=1.3.0",
     "folium>=0.12.0",
     "beautifulsoup4>=4.14.3",
     "setuptools>=82.0.0",
     "rgbmatrix",
+    "opensky-api",
+    "airportsdata>=20240101",
 ]
 
 [project.scripts]
@@ -45,3 +46,4 @@ include = [
 
 [tool.uv.sources]
 rgbmatrix = { git = "https://github.com/hzeller/rpi-rgb-led-matrix" }
+opensky-api = { git = "https://github.com/openskynetwork/opensky-api.git", subdirectory = "python" }

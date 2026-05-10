@@ -12,6 +12,7 @@
   - [2. Connect via SSH](#2-connect-via-ssh)
   - [3. Install the Adafruit Bonnet](#3-install-the-adafruit-bonnet)
   - [4. Install Git and Configure Your Info](#4-install-git-and-configure-your-info)
+  - [5. Set Up OpenSky API Credentials](#5-set-up-opensky-api-credentials)
   - [Optional: Add a Power Button](#optional-add-a-power-button)
 
 ---
@@ -193,7 +194,6 @@ sudo apt install python3-pip
 sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 pip3 install pytz requests
 pip install beautifulsoup4
-pip3 install FlightRadarAPI
 pip install folium selenium pillow
 pip3 install --user flask
 sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.11
@@ -232,6 +232,26 @@ You can also run it like so to create a log file in case there are issues.
 ```
 @reboot sleep 60 && ~/its-a-plane-python/its-a-plane.py >> ~/its-a-plane-python/workdammit.log 2>&1
 ```
+
+### 5. Set Up OpenSky API Credentials
+
+Flight data is fetched from the [OpenSky Network](https://opensky-network.org/), which is free but requires an account for authenticated API access (higher rate limits).
+
+1. Register for a free account at [opensky-network.org](https://opensky-network.org/index.php?option=com_users&view=registration)
+2. Log in and go to **Account → API Credentials**
+3. Click **Generate new credentials** to create a client ID and secret
+4. Create a file called `credentials.json` in the project root (the same directory as `its_a_plane/`) with the following content:
+
+```json
+{
+    "client_id": "your_client_id",
+    "client_secret": "your_client_secret"
+}
+```
+
+Replace `your_client_id` and `your_client_secret` with the values from step 3.
+
+---
 
 Optional: Add a Power Button
 If you'd like to add a power button, you can solder the button to the **GND/SCL** pins on the bonnet. Then, run the following commands:

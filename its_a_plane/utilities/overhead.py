@@ -2,12 +2,15 @@ import os
 import json
 import math
 import socket
+import time as time_mod
 from time import sleep
 from threading import Thread, Lock
 from datetime import datetime
 from typing import Optional, Tuple
 
-from FlightRadar24.api import FlightRadar24API
+import requests
+import airportsdata
+from opensky_api import OpenSkyApi, TokenManager
 from requests.exceptions import ConnectionError
 from urllib3.exceptions import NewConnectionError, MaxRetryError
 
@@ -43,11 +46,15 @@ except (ImportError, ModuleNotFoundError, NameError):
 RETRIES = 3
 RATE_LIMIT_DELAY = 1
 MAX_FLIGHT_LOOKUP = 5
-MAX_ALTITUDE = 100000
+MAX_ALTITUDE = 100000  # feet
 EARTH_RADIUS_M = 3958.8
 BLANK_FIELDS = ["", "N/A", "NONE"]
+ROUTE_LOOK_BACK = 12 * 3600  # seconds
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+CREDENTIALS_FILE = os.path.join(os.path.dirname(BASE_DIR), "credentials.json")
+
+_airports = airportsdata.load("ICAO")
 LOG_FILE = os.path.join(BASE_DIR, "close.txt")
 LOG_FILE_FARTHEST = os.path.join(BASE_DIR, "farthest.txt")
 
@@ -105,6 +112,26 @@ def plane_bearing(flight, home=LOCATION_DEFAULT):
         - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1)
     )
     return (math.degrees(b) + 360) % 360
+
+def lookup_aircraft(icao24):
+    try:
+        r = requests.get(f"https://hexdb.io/api/v1/aircraft/{icao24}", timeout=5)
+        if r.status_code == 200:
+            d = r.json()
+            return d.get("ICAOTypeCode", ""), d.get("RegisteredOwners", ""), d.get("OperatorFlagCode", "")
+    except Exception:
+        pass
+    return "", "", ""
+
+
+def airport_coords(icao_code):
+    if not icao_code:
+        return "", None, None
+    ap = _airports.get(icao_code.upper())
+    if ap:
+        return ap.get("iata") or icao_code, ap.get("lat"), ap.get("lon")
+    return icao_code, None, None
+
 
 # Distance wrappers
 
@@ -240,24 +267,15 @@ def log_farthest_flight(entry: dict):
 
 class Overhead:
     def __init__(self):
-        self._api = FlightRadar24API()
+        tm = TokenManager.from_json_file(CREDENTIALS_FILE)
+        self._api = OpenSkyApi(token_manager=tm)
         self._lock = Lock()
         self._data = []
         self._new_data = False
         self._processing = False
 
-    # Public
     def grab_data(self):
         Thread(target=self._grab).start()
-
-    # Safe nested dict access
-    def safe_get(self, d, *keys, default=None):
-        """Safely get nested dictionary values."""
-        for key in keys:
-            if not d or not isinstance(d, dict):
-                return default
-            d = d.get(key)
-        return d if d is not None else default
 
     def _grab(self):
         with self._lock:
@@ -267,95 +285,92 @@ class Overhead:
         data = []
 
         try:
-            bounds = self._api.get_bounds(ZONE_DEFAULT)
-            flights = self._api.get_flights(bounds=bounds)
+            bbox = (
+                ZONE_DEFAULT["br_y"],  # min_lat (south)
+                ZONE_DEFAULT["tl_y"],  # max_lat (north)
+                ZONE_DEFAULT["tl_x"],  # min_lon (west)
+                ZONE_DEFAULT["br_x"],  # max_lon (east)
+            )
+            states = self._api.get_states(bbox=bbox)
 
-            # Altitude filter
-            flights = [f for f in flights if MIN_ALTITUDE < f.altitude < MAX_ALTITUDE]
+            if states and states.states:
+                # Altitude filter — OpenSky uses metres, config is in feet
+                min_alt_m = MIN_ALTITUDE * 0.3048
+                max_alt_m = MAX_ALTITUDE * 0.3048
+                flights = [
+                    s for s in states.states
+                    if not s.on_ground and min_alt_m < (s.baro_altitude or 0) < max_alt_m
+                ]
 
-            # Sort & slice
-            flights.sort(key=lambda f: distance_from_flight_to_home(f))
-            flights = flights[:MAX_FLIGHT_LOOKUP]
+                flights.sort(key=lambda s: distance_from_flight_to_home(s))
+                flights = flights[:MAX_FLIGHT_LOOKUP]
 
-            for f in flights:
-                retries = RETRIES
-                while retries:
-                    sleep(RATE_LIMIT_DELAY)
-                    try:
-                        d = self._api.get_flight_details(f)
+                now = int(time_mod.time())
+                look_back = now - ROUTE_LOOK_BACK
 
-                        # Extract fields
-                        plane = self.safe_get(d, "aircraft", "model", "code", default="") or f.airline_icao or ""
-                        airline = self.safe_get(d, "airline", "name", default="")
+                for s in flights:
+                    retries = RETRIES
+                    while retries:
+                        sleep(RATE_LIMIT_DELAY)
+                        try:
+                            callsign = (s.callsign or "").strip()
 
-                        def clean_code(val):
-                            if not val or str(val).upper() in BLANK_FIELDS:
-                                return ""
-                            return val
+                            plane, airline, owner_icao = lookup_aircraft(s.icao24)
+                            if not owner_icao:
+                                owner_icao = callsign[:3] if len(callsign) >= 3 and callsign[:3].isalpha() else ""
 
-                        origin = clean_code(f.origin_airport_iata)
-                        destination = clean_code(f.destination_airport_iata)
+                            origin = destination = ""
+                            origin_lat = origin_lon = dest_lat = dest_lon = None
+                            dep_time = arr_time = None
 
-                        callsign = f.callsign or ""
+                            route_flights = self._api.get_flights_by_aircraft(s.icao24, look_back, now)
+                            if route_flights:
+                                recent = max(route_flights, key=lambda f: f.firstSeen)
+                                origin, origin_lat, origin_lon = airport_coords(recent.estDepartureAirport)
+                                destination, dest_lat, dest_lon = airport_coords(recent.estArrivalAirport)
+                                dep_time = recent.firstSeen
+                                arr_time = recent.lastSeen
 
-                        # Times
-                        t = self.safe_get(d, "time", default={})
-                        time_sched_dep = self.safe_get(t, "scheduled", "departure")
-                        time_sched_arr = self.safe_get(t, "scheduled", "arrival")
-                        time_real_dep = self.safe_get(t, "real", "departure")
-                        time_est_arr = self.safe_get(t, "estimated", "arrival")
+                            dist_o = distance_to_point(s, origin_lat, origin_lon) if origin_lat else 0
+                            dist_d = distance_to_point(s, dest_lat, dest_lon) if dest_lat else 0
 
-                        # Airport coordinates
-                        o = self.safe_get(d, "airport", "origin")
-                        origin_lat = self.safe_get(o, "position", "latitude")
-                        origin_lon = self.safe_get(o, "position", "longitude")
+                            entry = {
+                                "airline": airline,
+                                "plane": plane,
+                                "origin": origin,
+                                "origin_latitude": origin_lat,
+                                "origin_longitude": origin_lon,
+                                "destination": destination,
+                                "destination_latitude": dest_lat,
+                                "destination_longitude": dest_lon,
+                                "plane_latitude": s.latitude,
+                                "plane_longitude": s.longitude,
 
-                        dest = self.safe_get(d, "airport", "destination")
-                        dest_lat = self.safe_get(dest, "position", "latitude")
-                        dest_lon = self.safe_get(dest, "position", "longitude")
+                                "owner_iata": "",
+                                "owner_icao": owner_icao,
 
-                        dist_o = distance_to_point(f, origin_lat, origin_lon) if origin_lat else 0
-                        dist_d = distance_to_point(f, dest_lat, dest_lon) if dest_lat else 0
+                                "time_scheduled_departure": None,
+                                "time_scheduled_arrival": None,
+                                "time_real_departure": dep_time,
+                                "time_estimated_arrival": arr_time,
 
-                        entry = {
-                            "airline": airline,
-                            "plane": plane,
-                            "origin": origin,
-                            "origin_latitude": origin_lat,
-                            "origin_longitude": origin_lon,
-                            "destination": destination,
-                            "destination_latitude": dest_lat,
-                            "destination_longitude": dest_lon,
-                            "plane_latitude": f.latitude,
-                            "plane_longitude": f.longitude,
+                                "vertical_speed": s.vertical_rate,
+                                "callsign": callsign,
 
-                            "owner_iata": f.airline_iata or "N/A",
-                            "owner_icao": self.safe_get(d, "owner", "code", "icao", default="") or f.airline_icao or "",
+                                "distance_origin": dist_o,
+                                "distance_destination": dist_d,
+                                "distance": distance_from_flight_to_home(s),
+                                "direction": degrees_to_cardinal(plane_bearing(s)),
+                            }
 
-                            "time_scheduled_departure": time_sched_dep,
-                            "time_scheduled_arrival": time_sched_arr,
-                            "time_real_departure": time_real_dep,
-                            "time_estimated_arrival": time_est_arr,
+                            data.append(entry)
+                            log_flight_data(entry)
+                            log_farthest_flight(entry)
 
-                            "vertical_speed": f.vertical_speed,
-                            "callsign": callsign,
+                            break
 
-                            "distance_origin": dist_o,
-                            "distance_destination": dist_d,
-                            "distance": distance_from_flight_to_home(f),
-                            "direction": degrees_to_cardinal(plane_bearing(f)),
-                        }
-
-                        data.append(entry)
-
-                        # Log flights
-                        log_flight_data(entry)
-                        log_farthest_flight(entry)
-
-                        break
-
-                    except Exception as e:
-                        retries -= 1
+                        except Exception:
+                            retries -= 1
 
             with self._lock:
                 self._new_data = True
