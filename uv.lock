@@ -184,7 +184,7 @@ requires-dist = [
     { name = "opensky-api", git = "https://github.com/openskynetwork/opensky-api.git?subdirectory=python" },
     { name = "pillow", specifier = ">=9.0.0,<10.0.0" },
     { name = "requests", specifier = ">=2.25.0" },
-    { name = "rgbmatrix", git = "https://github.com/hzeller/rpi-rgb-led-matrix" },
+    { name = "rgbmatrix", git = "https://github.com/hzeller/rpi-rgb-led-matrix?subdirectory=bindings%2Fpython" },
     { name = "setuptools", specifier = ">=82.0.0" },
     { name = "urllib3", specifier = ">=1.26.0" },
 ]
@@ -324,8 +324,8 @@ wheels = [
 
 [[package]]
 name = "rgbmatrix"
-version = "0.0.1+20250323"
-source = { git = "https://github.com/hzeller/rpi-rgb-led-matrix#a6d11e56110da3442a7781db91d0889345ee8137" }
+version = "0.0.1"
+source = { git = "https://github.com/hzeller/rpi-rgb-led-matrix?subdirectory=bindings%2Fpython#a6d11e56110da3442a7781db91d0889345ee8137" }
 
 [[package]]
 name = "setuptools"

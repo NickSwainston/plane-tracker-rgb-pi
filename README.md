@@ -190,23 +190,8 @@ mv ~/logo2/* ~/logos/
 
 For Linux Bookworm:
 ```
-sudo apt install python3-pip
-sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
-pip3 install pytz requests
-pip install beautifulsoup4
-pip install folium selenium pillow
-pip3 install --user flask
-sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.11
-```
-
-Move the RGB Module
-```
-mv ~/rpi-rgb-led-matrix/bindings/python/rgbmatrix ~/its-a-plane-python/
-```
-
-Make the Script Executable
-```
-chmod +x ~/its-a-plane-python/its-a-plane.py
+sudo apt install python3-dev swig build-essential
+uv sync
 ```
 
 Edit the config file
@@ -218,19 +203,19 @@ nano ~/its-a-plane-python/config.py
 Run the Script
 
 ```
-~/its-a-plane-python/its-a-plane.py
+its_a_plane
 ```
 Set Up the Script to Run on Boot
 
 To ensure the script runs on boot, use crontab -e to edit the cron jobs and add the following line:
 
 ```
-@reboot sleep 60 && ~/its-a-plane-python/its-a-plane.py
+@reboot sleep 60 && cd ~/plane-tracker-rgb-pi && ~/.local/bin/uv run its_a_plane
 ```
 
 You can also run it like so to create a log file in case there are issues.
 ```
-@reboot sleep 60 && ~/its-a-plane-python/its-a-plane.py >> ~/its-a-plane-python/workdammit.log 2>&1
+@reboot sleep 60 && cd ~/plane-tracker-rgb-pi && ~/.local/bin/uv run its_a_plane >> ~/its-a-plane-python/workdammit.log 2>&1
 ```
 
 ### 5. Set Up OpenSky API Credentials
